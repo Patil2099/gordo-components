@@ -2,10 +2,6 @@ sudo: required
 
 services: docker
 
-dist: xenial
-
-cache: pip
-
 os:
   - linux
   - osx
@@ -17,7 +13,7 @@ env:
   - PYTHON_VERSION=3.7
 
 before_install:
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew update; brew install python$PYTHON_VERSION; else apt update -y; apt install -y python$PYTHON_VERSION; fi
+  - bash install-python.sh
 
 install:
   - pip install -r requirements.txt
