@@ -2,37 +2,53 @@ sudo: required
 
 services: docker
 
-language: python
-
-python:
-  - "3.6"
+dist: xenial
 
 cache: pip
 
 os:
   - linux
+  - osx
 
+language: generic
+
+env:
+  - PYTHON_VERSION=3.6
+  - PYTHON_VERSION=3.7
+
+before_install:
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew update; brew install python$PYTHON_VERSION; else apt update -y; apt install -y python$PYTHON_VERSION; fi
+
+install:
+  - pip install -r requirements.txt
+
+script:
+  - make testall
 
 jobs:
   include:
-  - stage: test
-    name: "setup.py testall"
-    install:
-      - pip install -r requirements.txt
+
+  - stage: "success jobs"
     script:
-      - make testall
-    after_success:
       # https://docs.codecov.io/docs/about-the-codecov-bash-uploader
       - bash <(curl -s https://codecov.io/bash)
+    env: PYTHON_VERSION=3.6
+    os: linux
+
   - name: "make images"
     install: skip
     script:
       - make images
+    env: PYTHON_VERSION=3.6
+    os: linux
+
   - name: "make docs"
     install:
       - pip install -r requirements.txt
     script:
       - make docs
+    env: PYTHON_VERSION=3.6
+    os: linux
 
 deploy:
   - provider: script
