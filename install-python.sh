@@ -18,4 +18,4 @@ else
 fi
 
 ~/anaconda/bin/conda create -n py python=$PYTHON_VERSION -y
-~/anaconda/bin/conda activate py
+source activate py
